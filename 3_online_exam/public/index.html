@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ExamForge - Advanced Online Examination Portal">
+  <title>ExamForge - Online Examination System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo" id="logo-home">
+      <span>Exam</span>Forge 📝
+    </a>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <span id="student-name-display" style="display: none; color: #818cf8; font-weight: 500;"></span>
+      <button class="btn btn-secondary" id="logout-btn" style="display: none; padding: 0.4rem 1rem; font-size: 0.85rem;">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- 1. Authentication Portal -->
+    <section id="auth-view">
+      <div class="auth-wrapper">
+        <div class="auth-header">
+          <h2 id="auth-title">Welcome Student</h2>
+          <p id="auth-subtitle" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Sign in to access your test dashboard</p>
+        </div>
+        
+        <form id="auth-form">
+          <div class="form-group" id="reg-name-group" style="display: none;">
+            <label for="auth-name">Student Full Name</label>
+            <input type="text" id="auth-name" class="form-control" placeholder="e.g. Alice Smith">
+            <div class="error-msg" id="err-name"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="auth-email">Email Address</label>
+            <input type="email" id="auth-email" class="form-control" placeholder="you@student.com" value="alice@student.com" required>
+            <div class="error-msg" id="err-email"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" class="form-control" placeholder="••••••••" value="password123" required>
+            <div class="error-msg" id="err-password"></div>
+          </div>
+          
+          <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;" id="auth-submit-btn">Login</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+          <p id="auth-toggle-text">Don't have an account? <span id="auth-toggle-link" style="color: var(--primary); cursor: pointer; font-weight: 600;">Register</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Dashboard View (Exams Listing & Past Results) -->
+    <section id="dashboard-view" style="display: none;">
+      <div style="margin-bottom: 2.5rem;">
+        <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem;">Available Exams</h2>
+        <p style="color: var(--text-muted);">Review your list of scheduled assessments. Choose one to start.</p>
+      </div>
+
+      <div class="exam-grid" id="exams-container">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Past Exam Results -->
+      <div style="margin-top: 4rem;">
+        <h2 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 1.5rem;">Your Graded Submissions</h2>
+        <div id="results-history-container">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Timer-based Active Exam Room -->
+    <section id="exam-room-view" style="display: none;">
+      <div class="exam-room-layout">
+        <!-- Left Panel: Current Question Canvas -->
+        <div class="exam-panel">
+          <div class="question-status-header">
+            <div>
+              <h3 id="exam-title-display" style="font-weight: 700; font-size: 1.25rem;">Exam Title</h3>
+              <p id="question-progress" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Question 1 of 10</p>
+            </div>
+            <button class="btn btn-danger" style="padding: 0.4rem 1rem; font-size: 0.85rem;" onclick="confirmSubmitExam()">Submit Paper</button>
+          </div>
+
+          <!-- Question text and options options -->
+          <div id="question-container" style="margin-bottom: 2rem;">
+            <h2 id="question-text" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1.5rem;">Question text goes here?</h2>
+            <div id="options-container">
+              <!-- Dynamically populated options -->
+            </div>
+          </div>
+
+          <!-- Navigation controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+            <button class="btn btn-secondary" id="prev-btn">◀ Previous</button>
+            <button class="btn" id="next-btn">Next Question ▶</button>
+          </div>
+        </div>
+
+        <!-- Right Panel: Side Status Controls (Timer and Question Index Map) -->
+        <div class="exam-sidebar">
+          <div class="timer-box">
+            <span style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">Remaining Time</span>
+            <div class="timer-count" id="timer-display">00:00</div>
+          </div>
+
+          <div class="timer-box" style="text-align: left;">
+            <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Questions Panel</h4>
+            <div class="question-nav-grid" id="question-nav-grid">
+              <!-- Rendered by JS -->
+            </div>
+            <div style="margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem; color: var(--text-muted);">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; border-radius: 3px; background: var(--success);"></div> Answered
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; border-radius: 3px; background: rgba(79, 70, 229, 0.2); border: 1px solid var(--primary);"></div> Visited/Active
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="width: 12px; height: 12px; border-radius: 3px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);"></div> Not Visited
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Examination Results Screen -->
+    <section id="results-view" style="display: none;">
+      <div class="result-container">
+        <h2 style="font-size: 1.8rem; font-weight: 700;">Assessment Graded</h2>
+        <p style="color: var(--text-muted); margin-top: 0.25rem;" id="results-exam-title">Web Development Basics</p>
+        
+        <div class="percentage-ring" id="percentage-ring">80%</div>
+        
+        <h3 id="result-status-text" style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">Passed</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;" id="result-score-summary">You scored 4 out of 5 questions correctly.</p>
+
+        <button class="btn" style="margin-top: 2rem; width: 100%;" onclick="closeResultsView()">Return to Dashboard</button>
+
+        <div class="breakdown-list" id="breakdown-container">
+          <!-- Correction details populated here -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast message -->
+  <div class="toast" id="toast">Feedback notifications</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

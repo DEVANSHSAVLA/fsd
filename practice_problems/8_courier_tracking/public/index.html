@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwiftPost - Courier Booking & Tracking</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>Swift</span>Post 📦⚡
+    </div>
+    <div class="role-selector">
+      <button id="mode-customer" class="mode-btn active" onclick="switchRole('customer')">Customer Portal</button>
+      <button id="mode-admin" class="mode-btn" onclick="switchRole('admin')">Dispatcher Admin</button>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- CUSTOMER PORTAL -->
+    <div id="customer-view" class="view-panel">
+      <div class="layout-grid">
+        
+        <!-- Left Column: Book a Package -->
+        <section class="panel">
+          <h2>Ship a Package</h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Fill sender, recipient, and package details to calculate pricing instantly.</p>
+          
+          <form id="booking-form">
+            <div class="form-row">
+              <div class="form-group" style="flex:1;">
+                <label for="sender-name">Sender Name</label>
+                <input type="text" id="sender-name" class="form-control" placeholder="Your Name" required>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label for="receiver-name">Recipient Name</label>
+                <input type="text" id="receiver-name" class="form-control" placeholder="Recipient Name" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group" style="flex:1;">
+                <label for="sender-addr">Sender Address</label>
+                <input type="text" id="sender-addr" class="form-control" placeholder="Pickup Address" required>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label for="receiver-addr">Recipient Address</label>
+                <input type="text" id="receiver-addr" class="form-control" placeholder="Destination Address" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" style="flex:1;">
+                <label for="pkg-weight">Package Weight (kg)</label>
+                <input type="number" id="pkg-weight" class="form-control" min="0.1" step="0.1" value="1.0" oninput="estimatePrice()" required>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label for="pkg-distance">Distance (km)</label>
+                <input type="number" id="pkg-distance" class="form-control" min="1" value="10" oninput="estimatePrice()" required>
+              </div>
+            </div>
+
+            <div class="price-preview-box">
+              <div style="font-size:0.8rem; color:var(--text-muted);">Estimated Delivery Price</div>
+              <div class="price-value" id="estimated-cost">$7.50</div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Formula: $5.00 Base + $2.00/kg + $0.05/km</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:1rem;">Book Delivery & Generate Tracking ID</button>
+          </form>
+
+          <!-- Success booking layout -->
+          <div id="booking-receipt" class="receipt-card" style="display: none; margin-top: 1.5rem;">
+            <div style="text-align: center; color: var(--success); font-weight:700; margin-bottom: 0.5rem;">✓ BOOKING CONFIRMED</div>
+            <p><strong>Tracking ID:</strong> <span id="rec-tracking" style="color:var(--primary); font-weight:700;">TRK-1029</span></p>
+            <p><strong>Cost:</strong> <span id="rec-cost">$12.50</span></p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">Copy your Tracking ID to search live shipping progress below.</p>
+            <button class="btn btn-sm" style="width:100%; margin-top: 0.8rem;" onclick="dismissReceipt()">Dismiss</button>
+          </div>
+        </section>
+
+        <!-- Right Column: Track a Package -->
+        <section class="panel">
+          <h2>Track Your Shipment</h2>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Enter package tracking identifier to view live dispatch history timeline.</p>
+          
+          <div class="form-row" style="margin-bottom: 1.5rem;">
+            <input type="text" id="track-id" class="form-control" placeholder="e.g. TRK-349021" style="flex:3;">
+            <button class="btn btn-primary" onclick="trackCourier()" style="flex:1; width:auto;">Track</button>
+          </div>
+
+          <!-- Tracking Timeline Display -->
+          <div id="tracking-results" style="display: none;">
+            <div class="status-summary-header">
+              <div>
+                <span style="font-size:0.8rem; color:var(--text-muted);">Current Status:</span>
+                <h3 id="track-status-text" style="color:var(--primary); margin:0.1rem 0;">IN TRANSIT</h3>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:0.8rem; color:var(--text-muted);">From &rarr; To</span>
+                <div id="track-route-text" style="font-size:0.9rem; font-weight:600;">Mumbai &rarr; Pune</div>
+              </div>
+            </div>
+
+            <!-- Timeline graphic -->
+            <div class="timeline">
+              <div class="timeline-step" id="step-booked">
+                <div class="timeline-icon">✓</div>
+                <div class="timeline-label">
+                  <h4>Order Booked</h4>
+                  <p id="time-booked">-</p>
+                </div>
+              </div>
+              <div class="timeline-step" id="step-transit">
+                <div class="timeline-icon">✓</div>
+                <div class="timeline-label">
+                  <h4>In Transit</h4>
+                  <p id="time-transit">-</p>
+                </div>
+              </div>
+              <div class="timeline-step" id="step-out">
+                <div class="timeline-icon">✓</div>
+                <div class="timeline-label">
+                  <h4>Out for Delivery</h4>
+                  <p id="time-out">-</p>
+                </div>
+              </div>
+              <div class="timeline-step" id="step-delivered">
+                <div class="timeline-icon">✓</div>
+                <div class="timeline-label">
+                  <h4>Delivered</h4>
+                  <p id="time-delivered">-</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audit Trail logs -->
+            <h4 style="font-size:0.9rem; margin: 1.5rem 0 0.8rem 0; color:#fff;">Status Logs Audit</h4>
+            <div id="track-audit-logs" class="audit-container">
+              <!-- Logs populated -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- DISPATCHER ADMIN PORTAL -->
+    <div id="admin-view" class="view-panel" style="display: none;">
+      <div class="layout-grid" style="grid-template-columns: 1fr;">
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Dispatcher Board (Shipment Operations)</h2>
+            <span style="font-size:0.85rem; color:var(--text-muted);">Select package row to update shipping logs.</span>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tracking ID</th>
+                  <th>Sender & Recipient</th>
+                  <th>Specs (Weight / Distance)</th>
+                  <th>Current Status</th>
+                  <th>Pricing</th>
+                  <th>Action Update</th>
+                </tr>
+              </thead>
+              <tbody id="admin-shipment-table">
+                <!-- Booked couriers listed here -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Status Update Modal Dialogue -->
+  <div id="status-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Update Shipment Log</h3>
+        <button onclick="closeStatusModal()" class="close-btn">&times;</button>
+      </div>
+      <form id="status-update-form">
+        <input type="hidden" id="status-pkg-id">
+        <div class="form-group">
+          <label for="status-select">Change Status To</label>
+          <select id="status-select" class="form-control" required>
+            <option value="Order Booked">Order Booked</option>
+            <option value="In Transit">In Transit</option>
+            <option value="Out for Delivery">Out for Delivery</option>
+            <option value="Delivered">Delivered</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="status-hub">Current Location / Hub</label>
+          <input type="text" id="status-hub" class="form-control" placeholder="e.g. Pune Sorting Hub" required>
+        </div>
+        <div class="form-group">
+          <label for="status-note">Log Memo / Note</label>
+          <input type="text" id="status-note" class="form-control" placeholder="e.g. Package sorted and loaded in transit truck" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Logistics Log</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

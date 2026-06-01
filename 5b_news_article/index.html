@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Article - Quantum Computing</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="reading-progress" id="progress-indicator"></div>
+
+  <div class="container">
+    <article class="article-wrapper">
+      
+      <!-- Article Title -->
+      <h1 class="article-title">The Dawn of Quantum Computing in Software Engineering</h1>
+
+      <!-- Author and Published Date -->
+      <div class="author-meta">
+        <div class="avatar">👨‍💻</div>
+        <div class="meta-details">
+          <span class="author-name">Dr. Nathan Vance</span>
+          <span class="publish-date">Published on May 30, 2026 • 4 min read</span>
+        </div>
+      </div>
+
+      <!-- Article Body -->
+      <div class="article-content">
+        <p>Quantum computing is rapidly transitioning from theoretical physics experiments to real-world software integration. As tech giants announce advances in qubit counts and fault tolerance, developer networks are racing to write algorithms that can leverage quantum superpositions.</p>
+
+        <p>Traditional binary systems operate with bits restricted to a static state of 0 or 1. In contrast, quantum bits (qubits) occupy a superposition, embodying both states simultaneously. This architectural shift unlocks computational paths capable of solving complex problems in cryptography, biochemistry, and optimization in fractions of a second.</p>
+
+        <blockquote>
+          "The core challenge of this decade is not just assembling quantum hardware, but engineering classical wrappers that let traditional developers interact with quantum processing units without needing a degree in particle physics."
+        </blockquote>
+
+        <p>Currently, the tooling ecosystem is maturing around Python-based frameworks such as Qiskit and Cirq. These tools allow classical code to configure logic gates on physical chipsets hosted in the cloud. As compiling pipelines optimize, the industry expects hybrid architectures to dominate corporate computing models.</p>
+
+        <p>In summary, the quantum shift represents a foundational change in system architecture. Software developers who start understanding vector states and probability densities today will find themselves leading the engineering teams of tomorrow.</p>
+      </div>
+
+    </article>
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const scrollVal = document.documentElement.scrollTop || document.body.scrollTop;
+      const heightVal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const percentage = (scrollVal / heightVal) * 100;
+      document.getElementById('progress-indicator').style.width = percentage + '%';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseFit - Fitness & Calorie Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Auth Container -->
+  <div id="auth-container" class="auth-card">
+    <div class="logo" style="text-align: center; font-size: 2rem; margin-bottom: 1rem;">
+      <span>Pulse</span>Fit ⚡
+    </div>
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Track workouts, monitor calories, and visualize your progress.</p>
+    
+    <div class="tabs">
+      <button id="tab-login" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+      <button id="tab-register" class="tab-btn" onclick="switchAuthTab('register')">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="login-form">
+      <div class="form-group">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" class="form-control" placeholder="Enter username" required>
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" class="form-control" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="register-form" style="display: none;">
+      <div class="form-group">
+        <label for="reg-username">Username</label>
+        <input type="text" id="reg-username" class="form-control" placeholder="Choose username" required>
+      </div>
+      <div class="form-group">
+        <label for="reg-email">Email Address</label>
+        <input type="email" id="reg-email" class="form-control" placeholder="email@domain.com" required>
+      </div>
+      <div class="form-group">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" class="form-control" placeholder="Create password" required>
+      </div>
+      <button type="submit" class="btn">Register</button>
+    </form>
+  </div>
+
+  <!-- Main App Container (Hidden on load) -->
+  <div id="app-container" style="display: none;">
+    <header>
+      <div class="logo"><span>Pulse</span>Fit ⚡</div>
+      <div class="user-profile">
+        <span id="user-display">Welcome, User</span>
+        <button onclick="logout()" class="btn-logout">Logout</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- 1. Stats Dashboard Grid -->
+      <section class="stats-grid">
+        <div class="card stat-card border-orange">
+          <div class="stat-icon">🔥</div>
+          <div>
+            <h3>Calories Burned</h3>
+            <p class="stat-value" id="stats-burned">0 kcal</p>
+            <span class="stat-desc" id="stats-workout-count">0 workouts logged</span>
+          </div>
+        </div>
+        <div class="card stat-card border-green">
+          <div class="stat-icon">🍎</div>
+          <div>
+            <h3>Calories Consumed</h3>
+            <p class="stat-value" id="stats-consumed">0 kcal</p>
+            <span class="stat-desc" id="stats-food-count">0 meals logged</span>
+          </div>
+        </div>
+        <div class="card stat-card border-blue">
+          <div class="stat-icon">⚖️</div>
+          <div>
+            <h3>Net Balance</h3>
+            <p class="stat-value" id="stats-balance">0 kcal</p>
+            <span class="stat-desc" id="stats-balance-desc">Burned vs Consumed</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress Meter -->
+      <section class="card" style="margin-bottom: 2rem;">
+        <h2>Today's Progress Goal</h2>
+        <div class="progress-container">
+          <div class="progress-bar-bg">
+            <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+            <span>Goal: Burn > Consumed</span>
+            <span id="goal-status">Balance: 0 kcal</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Dual Forms Grid (Log Workout & Log Calories) -->
+      <div class="dual-grid">
+        <!-- Log Workout Panel -->
+        <section class="card">
+          <h2>Log Workout</h2>
+          <form id="workout-form">
+            <div class="form-group">
+              <label for="workout-type">Exercise Type</label>
+              <select id="workout-type" class="form-control">
+                <option value="Running">🏃 Running</option>
+                <option value="Cycling">🚴 Cycling</option>
+                <option value="Weightlifting">🏋️ Weightlifting</option>
+                <option value="Yoga">🧘 Yoga</option>
+                <option value="Swimming">🏊 Swimming</option>
+                <option value="Other">💪 General Workout</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="flex:1;">
+                <label for="workout-duration">Duration (mins)</label>
+                <input type="number" id="workout-duration" class="form-control" min="1" placeholder="e.g. 30" required>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label for="workout-calories">Calories Burned</label>
+                <input type="number" id="workout-calories" class="form-control" min="1" placeholder="e.g. 250" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="workout-notes">Notes</label>
+              <input type="text" id="workout-notes" class="form-control" placeholder="e.g. Felt great, high intensity">
+            </div>
+            <button type="submit" class="btn btn-orange">Add Workout Entry</button>
+          </form>
+        </section>
+
+        <!-- Log Food Panel -->
+        <section class="card">
+          <h2>Log Calorie Intake</h2>
+          <form id="food-form">
+            <div class="form-group">
+              <label for="food-name">Food Item / Meal Name</label>
+              <input type="text" id="food-name" class="form-control" placeholder="e.g. Oatmeal with Bananas" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="flex:1;">
+                <label for="food-meal">Meal Category</label>
+                <select id="food-meal" class="form-control">
+                  <option value="Breakfast">🍳 Breakfast</option>
+                  <option value="Lunch">🍲 Lunch</option>
+                  <option value="Dinner">🍽️ Dinner</option>
+                  <option value="Snack">🍪 Snack</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label for="food-calories">Calories (kcal)</label>
+                <input type="number" id="food-calories" class="form-control" min="1" placeholder="e.g. 350" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-green">Add Food Entry</button>
+          </form>
+        </section>
+      </div>
+
+      <!-- 3. Logs and History Lists -->
+      <div class="dual-grid" style="margin-top: 2rem;">
+        <!-- Workout Log list -->
+        <section class="card">
+          <h2>Workout History</h2>
+          <div id="workout-log-container" class="log-container">
+            <!-- Dynamic Workouts -->
+          </div>
+        </section>
+
+        <!-- Food Log list -->
+        <section class="card">
+          <h2>Food & Calorie Logs</h2>
+          <div id="food-log-container" class="log-container">
+            <!-- Dynamic Food logs -->
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueBus - Seat Booking & Tickets</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <a href="#" class="logo">
+      <span>Blue</span>Bus 🚌
+    </a>
+    <span style="font-weight: 500; color: var(--primary);">Rapid Booking Portal</span>
+  </header>
+
+  <div class="container">
+    
+    <!-- 1. Search panel -->
+    <section class="panel" style="margin-bottom: 2rem;">
+      <h2>Search Routes</h2>
+      <form id="search-form">
+        <div class="form-row">
+          <div class="form-group" style="flex:1;">
+            <label for="route-from">From (Source)</label>
+            <select id="route-from" class="form-control">
+              <option value="Mumbai">Mumbai</option>
+              <option value="Pune">Pune</option>
+              <option value="Bangalore">Bangalore</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label for="route-to">To (Destination)</label>
+            <select id="route-to" class="form-control">
+              <option value="Pune">Pune</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Bangalore">Bangalore</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label for="route-date">Travel Date</label>
+            <input type="date" id="route-date" class="form-control" value="2026-06-15" required>
+          </div>
+        </div>
+        <button type="submit" class="btn" style="margin-top: 1rem; width: auto; padding: 0.7rem 2rem;">Search Buses</button>
+      </form>
+    </section>
+
+    <!-- 2. Main Bus Roster & Booking Layout (Hidden on load) -->
+    <div id="booking-area" class="bus-layout" style="display: none;">
+      <!-- Left: Bus Seats Grid -->
+      <div class="panel">
+        <h2>Select Seat Layout</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Click on available seats to select. Walkway is between seat columns.</p>
+        
+        <div class="seat-map-grid" id="seat-grid">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">
+          <div><span style="display: inline-block; width: 12px; height: 12px; background: #1e293b; border-radius: 3px; margin-right: 0.3rem;"></span>Available</div>
+          <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--primary); border-radius: 3px; margin-right: 0.3rem;"></span>Selected</div>
+          <div><span style="display: inline-block; width: 12px; height: 12px; background: #475569; border-radius: 3px; margin-right: 0.3rem;"></span>Occupied</div>
+        </div>
+      </div>
+
+      <!-- Right: Checkout details -->
+      <div class="panel">
+        <h2>Passenger & Payment Details</h2>
+        <form id="booking-form">
+          <div class="form-group">
+            <label for="pass-name">Passenger Name</label>
+            <input type="text" id="pass-name" class="form-control" required placeholder="e.g. Tony Stark">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="pass-phone">Contact Phone</label>
+              <input type="tel" id="pass-phone" class="form-control" required placeholder="e.g. 9876543210">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label for="pass-email">Email Address</label>
+              <input type="email" id="pass-email" class="form-control" required placeholder="e.g. tony@stark.com">
+            </div>
+          </div>
+          
+          <div style="margin: 1.5rem 0; border-top: 1px solid var(--border); padding-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>Selected Seats:</span>
+              <strong id="summary-seats">—</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: bold; color: var(--success);">
+              <span>Total Price:</span>
+              <strong id="summary-total">$0</strong>
+            </div>
+          </div>
+
+          <button type="submit" class="btn">Proceed & Pay</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 3. Dynamic Printable Ticket generation view -->
+    <div id="ticket-area" style="display: none; max-width: 500px; margin: 0 auto 3rem auto;">
+      <div class="ticket-card">
+        <div class="ticket-header">
+          <h3 style="margin: 0; font-size: 1.3rem;">BLUEBUS BOARDING PASS</h3>
+          <span style="font-size: 0.75rem; color: #64748b;">OFFICIAL ELECTRONIC TICKET</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>PASSENGER:</span> <strong id="tkt-name">TONY STARK</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>ROUTE:</span> <strong id="tkt-route">MUMBAI &rarr; PUNE</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>DATE:</span> <strong id="tkt-date">2026-06-15</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>SEATS:</span> <strong id="tkt-seats">12, 13</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 0.6rem; margin-top: 0.4rem;">
+            <span>FARE PAID:</span> <strong id="tkt-total">$1,200.00</strong>
+          </div>
+        </div>
+        <div class="ticket-barcode">||| | | || ||| || |||</div>
+      </div>
+      <button class="btn" style="margin-top: 1.5rem; background: var(--success);" onclick="dismissTicket()">Book Another Seat</button>
+    </div>
+
+    <!-- 4. Historical bookings list logs -->
+    <div class="panel">
+      <h2>Booking History & Tickets Logs</h2>
+      <div id="history-container">
+        <!-- Logs populated here -->
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

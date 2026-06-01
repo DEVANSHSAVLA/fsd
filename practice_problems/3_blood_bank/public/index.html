@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeFlow - Blood Bank System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <a href="#" class="logo">
+      <span>Life</span>Flow 🩸
+    </a>
+    <span style="font-weight: 500; color: var(--primary);">Emergency Stock Dashboard</span>
+  </header>
+
+  <div class="container">
+    <!-- Visual Inventory Stock Levels Grid -->
+    <section class="panel" style="margin-bottom: 2.5rem;">
+      <h2 style="margin-bottom: 1.5rem;">Available Blood Stock</h2>
+      <div class="stock-grid" id="stock-container">
+        <!-- Stock cells loaded by JS -->
+      </div>
+    </section>
+
+    <!-- Forms grid -->
+    <div class="dashboard-grid">
+      <!-- 1. Donor registration form -->
+      <div class="panel">
+        <h2>Register as a Donor</h2>
+        <form id="donor-form">
+          <div class="form-group">
+            <label for="donor-name">Donor Full Name</label>
+            <input type="text" id="donor-name" class="form-control" required placeholder="e.g. Clark Kent">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="donor-age">Age (Years)</label>
+              <input type="number" id="donor-age" class="form-control" min="18" max="65" required placeholder="18-65">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label for="donor-blood">Blood Group</label>
+              <select id="donor-blood" class="form-control">
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="donor-weight">Weight (kg)</label>
+              <input type="number" id="donor-weight" class="form-control" min="50" required placeholder="Min 50kg">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label for="donor-phone">Contact Number</label>
+              <input type="tel" id="donor-phone" class="form-control" required placeholder="e.g. 9876543210">
+            </div>
+          </div>
+          <button type="submit" class="btn" style="margin-top: 1rem;">Register & Donate</button>
+        </form>
+      </div>
+
+      <!-- 2. Hospital request form -->
+      <div class="panel">
+        <h2>Hospital Blood Request</h2>
+        <form id="request-form">
+          <div class="form-group">
+            <label for="req-hospital">Hospital Name</label>
+            <input type="text" id="req-hospital" class="form-control" required placeholder="e.g. City General Hospital">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="req-blood">Required Blood Type</label>
+              <select id="req-blood" class="form-control">
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label for="req-units">Quantity (Units)</label>
+              <input type="number" id="req-units" class="form-control" min="1" max="10" required placeholder="1-10">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="req-reason">Clinical Reason / Urgency</label>
+            <input type="text" id="req-reason" class="form-control" required placeholder="e.g. Emergency surgery">
+          </div>
+          <button type="submit" class="btn" style="margin-top: 1rem;">Submit Request</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin dashboard registry lists -->
+    <div class="panel" style="margin-bottom: 2.5rem;">
+      <h2>Admin Control: Hospital Requests</h2>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Hospital</th>
+              <th>Blood Type</th>
+              <th>Units</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="requests-table">
+            <!-- Loaded by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Donor Registry</h2>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th>Donor Name</th>
+              <th>Age</th>
+              <th>Blood Group</th>
+              <th>Weight</th>
+              <th>Contact</th>
+            </tr>
+          </thead>
+          <tbody id="donors-table">
+            <!-- Loaded by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

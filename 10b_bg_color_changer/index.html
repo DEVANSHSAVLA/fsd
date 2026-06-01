@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Background Color Changer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Dynamic Color Changer</h2>
+      <p>Click a color bubble below. It executes a JavaScript function that changes the body background color and pushes an animated toast confirmation.</p>
+
+      <!-- Color Dots Palette -->
+      <div class="palette-group">
+        <button class="color-dot" style="background-color: #0b0f19;" onclick="changeBackgroundColor('#0b0f19', 'Default Slate')"></button>
+        <button class="color-dot" style="background-color: #1e1b4b;" onclick="changeBackgroundColor('#1e1b4b', 'Midnight Violet')"></button>
+        <button class="color-dot" style="background-color: #064e3b;" onclick="changeBackgroundColor('#064e3b', 'Forest Green')"></button>
+        <button class="color-dot" style="background-color: #4c0519;" onclick="changeBackgroundColor('#4c0519', 'Crimson Rose')"></button>
+        <button class="color-dot" style="background-color: #0c4a6e;" onclick="changeBackgroundColor('#0c4a6e', 'Ocean Blue')"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Animated Confirmation Toast -->
+  <div class="toast-msg" id="toast-banner">Theme Updated!</div>
+
+  <script>
+    function changeBackgroundColor(hex, colorName) {
+      // 1. Dynamic DOM Manipulation: Update body style background
+      document.body.style.backgroundColor = hex;
+
+      // 2. Display Toast Notification with details
+      const toast = document.getElementById('toast-banner');
+      toast.innerText = `Backdrop updated to: ${colorName} (${hex})`;
+      
+      // Toggle animation class
+      toast.classList.add('show-toast');
+      
+      // Auto close after 2.5s
+      setTimeout(() => {
+        toast.classList.remove('show-toast');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

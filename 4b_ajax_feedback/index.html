@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Student Feedback Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="feedback-grid">
+      
+      <!-- Submission Form -->
+      <div>
+        <h2>Submit Feedback</h2>
+        <p>Your suggestions help us improve the overall campus utilities.</p>
+        
+        <form id="ajax-feedback-form">
+          <div class="form-group">
+            <label for="fb-name">Full Name</label>
+            <input type="text" id="fb-name" class="form-control" placeholder="e.g. Clark Kent" required>
+          </div>
+
+          <div class="form-group">
+            <label for="fb-rating">Rating</label>
+            <select id="fb-rating" class="form-control">
+              <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+              <option value="4">⭐⭐⭐⭐ Good</option>
+              <option value="3">⭐⭐⭐ Average</option>
+              <option value="2">⭐⭐ Fair</option>
+              <option value="1">⭐ Poor</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="fb-comments">Comments</label>
+            <textarea id="fb-comments" class="form-control" rows="3" placeholder="Write reviews..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn" id="fb-btn">Submit Feedback</button>
+        </form>
+      </div>
+
+      <!-- Live display wall -->
+      <div>
+        <h2>Live Reviews Wall</h2>
+        <p>Dynamic reviews updating dynamically without page refreshes.</p>
+        
+        <div class="reviews-wall" id="reviews-container">
+          <div class="review-card">
+            <div class="review-header">
+              <span class="review-author">Alice Johnson</span>
+              <span class="review-rating">⭐⭐⭐⭐⭐</span>
+            </div>
+            <p class="review-text">Dynamic classroom setups and premium labs. Best university experience!</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

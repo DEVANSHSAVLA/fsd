@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Feedback Form</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="form-wrapper">
+    <h2>Send Us Feedback</h2>
+    <p>Provide comments to help us improve our developer tools</p>
+
+    <form id="user-feedback-form">
+      <div class="form-group">
+        <label for="user-name">Your Full Name</label>
+        <input type="text" id="user-name" class="form-control" placeholder="e.g. Emily Watson" required>
+      </div>
+
+      <div class="form-group">
+        <label for="user-email">Email Address</label>
+        <input type="email" id="user-email" class="form-control" placeholder="e.g. emily@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="user-comments">Comments / Feedback</label>
+        <textarea id="user-comments" class="form-control" rows="4" placeholder="Write suggestions or remarks..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">Submit Feedback</button>
+    </form>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast-notify">Feedback Submitted Successfully!</div>
+
+  <script>
+    document.getElementById('user-feedback-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const toast = document.getElementById('toast-notify');
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+        document.getElementById('user-feedback-form').reset();
+      }, 2500);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIT - College Information Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Apex Institute of Technology</h1>
+    <p>Accredited Center of Academic Excellence</p>
+  </header>
+
+  <div class="container">
+    
+    <!-- Table Section -->
+    <section>
+      <h2>Academic Programs & Fees</h2>
+      <p>A list of our undergraduate and postgraduate programs, along with their annual tuition fees and durations:</p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Course ID</th>
+            <th>Program Name</th>
+            <th>Department</th>
+            <th>Duration</th>
+            <th>Annual Fees</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CSE-101</td>
+            <td>B.Tech Computer Science & Engineering</td>
+            <td>Computer Science</td>
+            <td>4 Years</td>
+            <td>$12,000</td>
+          </tr>
+          <tr>
+            <td>ECE-102</td>
+            <td>B.Tech Electronics & Communication</td>
+            <td>Electrical Engineering</td>
+            <td>4 Years</td>
+            <td>$10,500</td>
+          </tr>
+          <tr>
+            <td>MBA-201</td>
+            <td>Master of Business Administration</td>
+            <td>Management Studies</td>
+            <td>2 Years</td>
+            <td>$14,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Lists Section -->
+    <section>
+      <h2>Admission Guidelines</h2>
+      <p>Candidates must fulfill the following prerequisites to register for the upcoming session:</p>
+      
+      <ol class="admission-list">
+        <li>Submit the online registration form.</li>
+        <li>Upload high school certificate transcripts.</li>
+        <li>Clear the institute's entrance review examination.</li>
+        <li>Participate in the personal interview phase.</li>
+        <li>Pay the seat booking fees to lock registration.</li>
+      </ol>
+    </section>
+
+    <!-- Images Section -->
+    <section>
+      <h2>Our Campus Gallery</h2>
+      <p>Take a tour around the high-quality campus infrastructure that fosters state-of-the-art learning:</p>
+      
+      <div class="campus-gallery">
+        <div class="gallery-card">
+          <div class="img-placeholder">📚</div>
+          <p>Central Library</p>
+        </div>
+        <div class="gallery-card">
+          <div class="img-placeholder">🔬</div>
+          <p>Robotics & IoT Lab</p>
+        </div>
+        <div class="gallery-card">
+          <div class="img-placeholder">🏃</div>
+          <p>Sports Complex</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <section>
+      <h2>Admissions Inquiry Form</h2>
+      <p>Have questions? Fill out the form, and our representative will reach out to you.</p>
+      
+      <form onsubmit="event.preventDefault(); alert('Your inquiry has been submitted!'); this.reset();">
+        <div class="form-group">
+          <label for="student-name">Full Name</label>
+          <input type="text" id="student-name" class="form-control" placeholder="Enter your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="student-email">Email Address</label>
+          <input type="email" id="student-email" class="form-control" placeholder="Enter your email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="course-interest">Program of Interest</label>
+          <select id="course-interest" class="form-control">
+            <option>B.Tech Computer Science</option>
+            <option>B.Tech Electronics</option>
+            <option>Master of Business Administration (MBA)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="student-comments">Inquiry / Message</label>
+          <textarea id="student-comments" class="form-control" rows="3" placeholder="State your query here..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn">Send Inquiry</button>
+      </form>
+    </section>
+
+  </div>
+
+</body>
+</html>

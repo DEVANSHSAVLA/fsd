@@ -1,0 +1,1 @@
+{"name": "4b-ajax-feedback", "version": "1.0.0", "description": "Server for 4b-ajax-feedback", "main": "server.js", "scripts": {"start": "node server.js"}, "dependencies": {"express": "^4.19.2"}}

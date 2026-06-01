@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wanderlust - Luxury Tours & Bookings</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>Wander</span>lust ✈️
+    </div>
+    <span class="sub-logo">Bespoke Experiences</span>
+  </header>
+
+  <div class="container">
+    
+    <!-- 1. Destination Catalog Grid -->
+    <section>
+      <div class="section-title">
+        <h2>Curated Holiday Escapes</h2>
+        <p>Explore handpicked luxury destinations with verified day-by-day schedules.</p>
+      </div>
+
+      <div class="destinations-grid" id="destinations-container">
+        <!-- Dynamic destination cards -->
+      </div>
+    </section>
+
+    <!-- 2. Dual Booking Grid (Appears after selection) -->
+    <div class="booking-grid" id="checkout-section" style="display: none; margin-top: 3rem;">
+      
+      <!-- Checkout Form -->
+      <section class="panel">
+        <h2>Confirm Your Experience</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+          Provide travel dates and guest metrics to calculate billing.
+        </p>
+
+        <form id="booking-form">
+          <input type="hidden" id="book-pkg-id">
+          
+          <div class="form-group">
+            <label for="book-name">Lead Passenger Name</label>
+            <input type="text" id="book-name" class="form-control" placeholder="e.g. Clark Kent" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="book-email">Email Address</label>
+              <input type="email" id="book-email" class="form-control" placeholder="e.g. clark@dailyplanet.com" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label for="book-phone">Phone Number</label>
+              <input type="tel" id="book-phone" class="form-control" placeholder="e.g. 555-9821" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="book-date">Departure Date</label>
+              <input type="date" id="book-date" class="form-control" value="2026-07-10" required>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label for="book-guests">Number of Guests</label>
+              <input type="number" id="book-guests" class="form-control" min="1" max="10" value="1" oninput="updateBookingSummary()" required>
+            </div>
+          </div>
+
+          <!-- Checkout Math Summary -->
+          <div class="booking-summary-box">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span>Selected Tour:</span>
+              <strong id="summary-tour-name">Maldives Resort</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span>Rate Per Guest:</span>
+              <strong id="summary-tour-rate">$1,200</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; color: var(--success); border-top:1px solid var(--border); padding-top:0.6rem; margin-top:0.6rem;">
+              <span>Grand Total:</span>
+              <strong id="summary-total">$1,200</strong>
+            </div>
+          </div>
+
+          <!-- Mock Credit Card Payment Portal -->
+          <div class="payment-box">
+            <h3 style="font-size:0.9rem; margin-bottom:0.8rem; color:#fff;">Secure Payment Checkout</h3>
+            <div class="form-group">
+              <label for="card-num">Credit Card Number</label>
+              <input type="text" id="card-num" class="form-control" placeholder="4111 2222 3333 4444" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="flex:2;">
+                <label for="card-expiry">Expiry Date</label>
+                <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" required>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label for="card-cvv">CVV</label>
+                <input type="password" id="card-cvv" class="form-control" placeholder="123" maxlength="3" required>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success">Complete Booking & Authorize Funds</button>
+        </form>
+      </section>
+
+      <!-- Printable Boarding Pass Invoice Card -->
+      <section id="voucher-panel" class="panel voucher-wrapper" style="display: none;">
+        <div class="voucher-card">
+          <div class="voucher-header">
+            <div>
+              <h3>BOARDING VOUCHER</h3>
+              <p>CONFIRMED RESERVATION</p>
+            </div>
+            <span style="font-size: 1.8rem;">✈️</span>
+          </div>
+          
+          <div class="voucher-body">
+            <div class="voucher-col">
+              <span>PASSENGER</span>
+              <strong id="v-name">Clark Kent</strong>
+            </div>
+            <div class="voucher-col" style="text-align: right;">
+              <span>CONFIRMATION ID</span>
+              <strong id="v-code" style="color:var(--primary);">WND-102941</strong>
+            </div>
+          </div>
+          
+          <div class="voucher-body">
+            <div class="voucher-col">
+              <span>DESTINATION</span>
+              <strong id="v-dest">Maldives Luxury Resort</strong>
+            </div>
+            <div class="voucher-col" style="text-align: right;">
+              <span>DEPARTURE DATE</span>
+              <strong id="v-date">2026-07-10</strong>
+            </div>
+          </div>
+
+          <div class="voucher-body" style="border-bottom: none; padding-bottom: 0;">
+            <div class="voucher-col">
+              <span>GUESTS</span>
+              <strong id="v-guests">2 Adults</strong>
+            </div>
+            <div class="voucher-col" style="text-align: right;">
+              <span>TOTAL FARE PAID</span>
+              <strong id="v-price" style="color:var(--success); font-size:1.1rem;">$2,400.00</strong>
+            </div>
+          </div>
+
+          <div class="barcode">|||| |||| ||| |||| ||</div>
+        </div>
+
+        <button class="btn" style="margin-top:1.5rem; background:var(--primary);" onclick="dismissVoucher()">Search Another Package</button>
+      </section>
+
+    </div>
+
+    <!-- 3. History of Bookings -->
+    <section class="panel" style="margin-top: 3rem;">
+      <h2>Active Trip Reservations Ledger</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem;">Below are verified paid packages processed on your account.</p>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Voucher ID</th>
+              <th>Destination</th>
+              <th>Passenger</th>
+              <th>Guests Count</th>
+              <th>Travel Date</th>
+              <th>Amount Paid</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="bookings-table-body">
+            <!-- Bookings logs listed here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

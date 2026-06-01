@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RollCall - Attendance Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <a href="#" class="logo">
+      <span>Roll</span>Call 📋
+    </a>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <span id="user-display" style="display: none; color: #818cf8; font-weight: 500;"></span>
+      <button class="btn" id="logout-btn" style="display: none; padding: 0.3rem 0.8rem; font-size: 0.8rem; width: auto;">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- 1. Secure Authentication Screen -->
+    <section id="auth-view">
+      <div class="auth-card">
+        <h2 style="text-align: center; margin-bottom: 0.3rem;">Sign In</h2>
+        <p style="text-align: center; margin-bottom: 1.5rem;">Access student attendance records</p>
+        
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" class="form-control" placeholder="faculty@school.com" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn" style="margin-top: 1rem;">Unlock Portal</button>
+        </form>
+        
+        <div style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted); text-align: center; line-height: 1.5;">
+          <strong>Demo Roles:</strong><br>
+          Faculty: <code>faculty@school.com</code> / <code>password123</code><br>
+          Student: <code>student@school.com</code> / <code>password123</code><br>
+          Admin: <code>admin@school.com</code> / <code>password123</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Faculty Dashboard View -->
+    <section id="faculty-view" class="dashboard-panel" style="display: none;">
+      <div class="panel-header">
+        <h2 style="margin: 0; border: none; padding: 0;">Mark Student Attendance</h2>
+        <span style="font-weight: 600;" id="date-label">Today</span>
+      </div>
+
+      <div class="form-group" style="max-width: 250px; margin-bottom: 2rem;">
+        <label>Select Lecture Course</label>
+        <select id="lecture-subject" class="form-control">
+          <option value="Math">Mathematics-I</option>
+          <option value="Science">Advanced Physics</option>
+        </select>
+      </div>
+
+      <div id="roster-container">
+        <!-- Faculty marks student status here -->
+      </div>
+
+      <button class="btn" style="margin-top: 2rem; max-width: 200px;" onclick="submitAttendance()">Save Attendance</button>
+    </section>
+
+    <!-- 3. Student Dashboard View -->
+    <section id="student-view" class="dashboard-panel" style="display: none;">
+      <div class="panel-header">
+        <h2 style="margin: 0; border: none; padding: 0;">My Attendance Reports</h2>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-box">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Overall attendance</span>
+          <span class="kpi-value" id="student-pct">0%</span>
+        </div>
+        <div class="kpi-box">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Classes present</span>
+          <span class="kpi-value" id="student-present-count">0/0</span>
+        </div>
+        <div class="kpi-box">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Status warning</span>
+          <span class="kpi-value" id="student-status-badge" style="font-size: 1.4rem; padding-top: 0.6rem;">None</span>
+        </div>
+      </div>
+
+      <h3>Detailed Attendance Logs</h3>
+      <table style="width: 100%;">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="student-logs-table">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 4. Admin Dashboard View -->
+    <section id="admin-view" class="dashboard-panel" style="display: none;">
+      <div class="panel-header">
+        <h2 style="margin: 0; border: none; padding: 0;">Monthly Summaries & Roster</h2>
+        <button class="btn" style="width: auto; padding: 0.4rem 1rem;" onclick="generateSummaryReport()">Export Report</button>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-box">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Total students enrolled</span>
+          <span class="kpi-value" id="admin-student-count">0</span>
+        </div>
+        <div class="kpi-box">
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Average system attendance</span>
+          <span class="kpi-value" id="admin-avg-pct">0%</span>
+        </div>
+      </div>
+
+      <h3>Roster Monthly Summary</h3>
+      <table style="width: 100%;">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Full Name</th>
+            <th>Attended</th>
+            <th>Absences</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody id="admin-summary-table">
+          <!-- Summaries listed -->
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

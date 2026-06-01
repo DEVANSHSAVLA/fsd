@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Course Registration System</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Load React, ReactDOM, and Babel from CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const SEED_COURSES = [
+      { id: 1, code: "CS-101", title: "Introduction to Computer Systems", instructor: "Dr. Nathan Vance", status: "Active" },
+      { id: 2, code: "EE-205", title: "Circuit Logic & Theory", instructor: "Prof. Sarah Jenkins", status: "Active" }
+    ];
+
+    function App() {
+      const [courses, setCourses] = useState(SEED_COURSES);
+      
+      // Form fields
+      const [code, setCode] = useState('');
+      const [title, setTitle] = useState('');
+      const [instructor, setInstructor] = useState('');
+      const [status, setStatus] = useState('Active');
+      
+      // Editing details
+      const [editId, setEditId] = useState(null);
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!code || !title || !instructor) return;
+
+        if (editId !== null) {
+          // Edit Update
+          setCourses(courses.map(c => c.id === editId ? { ...c, code, title, instructor, status } : c));
+          setEditId(null);
+        } else {
+          // Add Entry
+          const newCourse = {
+            id: Date.now(),
+            code,
+            title,
+            instructor,
+            status
+          };
+          setCourses([...courses, newCourse]);
+        }
+
+        // Reset
+        setCode('');
+        setTitle('');
+        setInstructor('');
+        setStatus('Active');
+      };
+
+      const handleEdit = (course) => {
+        setEditId(course.id);
+        setCode(course.code);
+        setTitle(course.title);
+        setInstructor(course.instructor);
+        setStatus(course.status);
+      };
+
+      const handleDelete = (id) => {
+        if (confirm("Delete this course entry?")) {
+          setCourses(courses.filter(c => c.id !== id));
+        }
+      };
+
+      return (
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <h1 style={{ fontSize: '2.2rem', fontWeight: 700 }}>Course Registration System</h1>
+            <p style={{ color: 'var(--text-muted)' }}>Dynamically add, view, and modify student courses using interactive state binds.</p>
+          </div>
+
+          <!-- Registration panel form -->
+          <div className="panel">
+            <h2>{editId ? "Modify Course" : "Register Course"}</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-group" style={{ flex: '0 0 150px' }}>
+                  <label>Course Code</label>
+                  <input type="text" className="form-control" placeholder="CS-101" value={code} onChange={e=>setCode(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                  <label>Course Title</label>
+                  <input type="text" className="form-control" placeholder="Intro to Algorithms" value={title} onChange={e=>setTitle(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                  <label>Instructor Name</label>
+                  <input type="text" className="form-control" placeholder="Dr. Sarah Jenkins" value={instructor} onChange={e=>setInstructor(e.target.value)} required />
+                </div>
+                <div className="form-group" style={{ flex: '0 0 120px' }}>
+                  <label>Status</label>
+                  <select className="form-control" value={status} onChange={e=>setStatus(e.target.value)}>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button type="submit" className="btn">{editId ? "Update Details" : "Add Course"}</button>
+                {editId && (
+                  <button type="button" className="btn btn-secondary" onClick={() => {
+                    setEditId(null);
+                    setCode('');
+                    setTitle('');
+                    setInstructor('');
+                    setStatus('Active');
+                  }}>Cancel</button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          <!-- Courses Grid List -->
+          <div className="panel">
+            <h2>Current Course Catalog</h2>
+            <div className="course-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Course Title</th>
+                    <th>Instructor</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {courses.map(course => (
+                    <tr key={course.id}>
+                      <td><strong>{course.code}</strong></td>
+                      <td>{course.title}</td>
+                      <td>{course.instructor}</td>
+                      <td>
+                        <span className={`status-badge ${course.status === 'Active' ? 'status-active' : 'status-inactive'}`}>
+                          {course.status}
+                        </span>
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => handleEdit(course)}>Edit</button>
+                          <button className="btn btn-secondary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', background: '#ef4444', border: 'none' }} onClick={() => handleDelete(course.id)}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

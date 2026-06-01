@@ -1,0 +1,1 @@
+{"name": "10b-bg-color-changer", "version": "1.0.0", "description": "Server for 10b-bg-color-changer", "main": "server.js", "scripts": {"start": "node server.js"}, "dependencies": {"express": "^4.19.2"}}

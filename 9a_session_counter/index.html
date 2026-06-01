@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session Logged Users Counter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <section>
+      <h2>Session User Counter</h2>
+      <p>Simulate user logons. Tracks and increments logged users in the current browser session using <code>sessionStorage</code>.</p>
+
+      <div class="counter-card">
+        <span style="font-size: 0.85rem; color: var(--text-muted); display: block; text-transform: uppercase;">Session Logged Count</span>
+        <span class="counter-value" id="count-val">0</span>
+      </div>
+
+      <form id="session-form">
+        <div class="form-row">
+          <input type="text" id="username-box" class="form-control" placeholder="Enter username..." required>
+          <button type="submit" class="btn">Login</button>
+          <button type="button" class="btn btn-secondary" onclick="resetSession()">Reset</button>
+        </div>
+      </form>
+
+      <h3 style="font-size: 1.05rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem;">Session Entries</h3>
+      <table style="width: 100%;">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>User</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="logs-table-body">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const countVal = document.getElementById('count-val');
+    const tableBody = document.getElementById('logs-table-body');
+    const usernameBox = document.getElementById('username-box');
+
+    function renderLogs() {
+      const logs = JSON.parse(sessionStorage.getItem('sessionLogins')) || [];
+      countVal.innerText = logs.length;
+
+      if (logs.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">No sessions active.</td></tr>`;
+      } else {
+        tableBody.innerHTML = logs.map(entry => `
+          <tr>
+            <td>${entry.time}</td>
+            <td><strong>${escapeHTML(entry.name)}</strong></td>
+            <td><span style="color: var(--primary);">● Active</span></td>
+          </tr>
+        `).reverse().join('');
+      }
+    }
+
+    document.getElementById('session-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = usernameBox.value.trim();
+      if (!name) return;
+
+      const time = new Date().toLocaleTimeString();
+      const logs = JSON.parse(sessionStorage.getItem('sessionLogins')) || [];
+      
+      logs.push({ name, time });
+      sessionStorage.setItem('sessionLogins', JSON.stringify(logs));
+      usernameBox.value = '';
+      
+      renderLogs();
+    });
+
+    window.resetSession = function() {
+      sessionStorage.removeItem('sessionLogins');
+      renderLogs();
+    };
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    // Initial render
+    renderLogs();
+  </script>
+</body>
+</html>

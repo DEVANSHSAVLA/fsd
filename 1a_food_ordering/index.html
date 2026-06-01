@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gourmet Express - Premium Online Food Ordering System with interactive cart and order tracking.">
+  <title>Gourmet Express - Online Food Ordering</title>
+  <!-- Load Google Fonts -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Load React, ReactDOM, and Babel CDN for dynamic rendering -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    const MENU_ITEMS = [
+      { id: 1, name: 'Truffle Bacon Burger', category: 'Burgers', price: 14.99, icon: '🍔', desc: 'Premium angus beef, crispy maple bacon, black truffle aioli, aged cheddar on brioche.', tag: 'Chef Choice' },
+      { id: 2, name: 'Double Cheese Overload', category: 'Burgers', price: 12.49, icon: '🍔', desc: 'Double smash patty, quadruple cheddar cheese, signature spread, grilled onions.', tag: 'Popular' },
+      { id: 3, name: 'Spicy Diavola Pizza', category: 'Pizzas', price: 18.99, icon: '🍕', desc: 'San marzano sauce, fresh mozzarella, spicy calabrian salami, hot honey drizzle.', tag: 'Spicy' },
+      { id: 4, name: 'Four Cheese & Truffle', category: 'Pizzas', price: 19.99, icon: '🍕', desc: 'Creamy ricotta, gorgonzola, parmesan, fresh mozzarella, white truffle oil.', tag: 'Vegetarian' },
+      { id: 5, name: 'Premium Dragon Sushi Roll', category: 'Asian', price: 16.99, icon: '🍣', desc: 'Eel and cucumber inside, sliced avocado and unagi sauce outside, topped with tobiko.', tag: 'Signature' },
+      { id: 6, name: 'Tonkotsu Ramen Bowl', category: 'Asian', price: 15.49, icon: '🍜', desc: 'Rich 24-hour pork bone broth, tender chashu pork, soft soft-boiled egg, scallions, nori.', tag: 'Best Seller' },
+      { id: 7, name: 'Lava Fudge Cake', category: 'Desserts', price: 8.99, icon: '🍰', desc: 'Warm chocolate cake with a molten liquid center, served with vanilla bean ice cream.', tag: 'Sweet' },
+      { id: 8, name: 'Matcha Crème Brûlée', category: 'Desserts', price: 9.49, icon: '🍨', desc: 'Creamy organic matcha custard topped with a glass-like caramelized sugar shell.', tag: 'Special' },
+      { id: 9, name: 'Hibiscus Mocktail', category: 'Drinks', price: 6.49, icon: '🍹', desc: 'Freshly brewed hibiscus tea, lime juice, mint leaves, splash of sparkling soda.', tag: 'Refreshing' },
+      { id: 10, name: 'Iced Vanilla Matcha Latte', category: 'Drinks', price: 5.99, icon: '🍵', desc: 'Ceremonial grade matcha whisked over milk with premium madagascar vanilla.', tag: 'New' }
+    ];
+
+    function App() {
+      const [selectedCategory, setSelectedCategory] = useState('All');
+      const [cart, setCart] = useState([]);
+      const [isCartOpen, setIsCartOpen] = useState(false);
+      const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+      const [toastMsg, setToastMsg] = useState('');
+      
+      // Order tracking state
+      const [activeOrder, setActiveOrder] = useState(null); // { name, address, step }
+      
+      // Checkout Form state
+      const [formData, setFormData] = useState({ name: '', phone: '', address: '', note: '' });
+      const [formErrors, setFormErrors] = useState({});
+
+      // Toast notification helper
+      const showToast = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(''), 3000);
+      };
+
+      // Filtered items
+      const filteredMenu = useMemo(() => {
+        if (selectedCategory === 'All') return MENU_ITEMS;
+        return MENU_ITEMS.filter(item => item.category === selectedCategory);
+      }, [selectedCategory]);
+
+      // Cart Calculations
+      const subtotal = useMemo(() => {
+        return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      }, [cart]);
+      
+      const deliveryFee = subtotal > 40 ? 0 : 4.99;
+      const taxRate = 0.08; // 8%
+      const tax = subtotal * taxRate;
+      const total = subtotal + deliveryFee + tax;
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+      // Add to cart handler
+      const addToCart = (item) => {
+        setCart(prevCart => {
+          const existing = prevCart.find(i => i.id === item.id);
+          if (existing) {
+            return prevCart.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
+          }
+          return [...prevCart, { ...item, quantity: 1 }];
+        });
+        showToast(`Added ${item.name} to cart!`);
+      };
+
+      // Change quantity helper
+      const updateQty = (id, change) => {
+        setCart(prevCart => {
+          return prevCart.map(item => {
+            if (item.id === id) {
+              const newQty = item.quantity + change;
+              return newQty > 0 ? { ...item, quantity: newQty } : null;
+            }
+            return item;
+          }).filter(Boolean);
+        });
+      };
+
+      // Form validation and Order placement
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        if (formErrors[name]) {
+          setFormErrors({ ...formErrors, [name]: '' });
+        }
+      };
+
+      const submitOrder = (e) => {
+        e.preventDefault();
+        const errors = {};
+        if (!formData.name.trim()) errors.name = 'Name is required';
+        if (!formData.phone.trim()) {
+          errors.phone = 'Phone number is required';
+        } else if (!/^\d{10}$/.test(formData.phone.trim())) {
+          errors.phone = 'Enter a valid 10-digit mobile number';
+        }
+        if (!formData.address.trim()) errors.address = 'Delivery address is required';
+
+        if (Object.keys(errors).length > 0) {
+          setFormErrors(errors);
+          return;
+        }
+
+        // Place order successfully
+        setActiveOrder({
+          name: formData.name,
+          address: formData.address,
+          step: 0
+        });
+        setCart([]);
+        setShowCheckoutModal(false);
+        setIsCartOpen(false);
+        showToast('Order placed successfully!');
+      };
+
+      // Order status increment simulator
+      useEffect(() => {
+        if (activeOrder === null) return;
+        if (activeOrder.step >= 3) return; // Order completed
+
+        const timer = setInterval(() => {
+          setActiveOrder(prev => {
+            if (!prev) return null;
+            if (prev.step >= 3) {
+              clearInterval(timer);
+              return prev;
+            }
+            const nextStep = prev.step + 1;
+            const statusNames = ['Preparing', 'Out for Delivery', 'Delivered'];
+            showToast(`Order Status: ${statusNames[nextStep - 1] || 'Delivered'}`);
+            return { ...prev, step: nextStep };
+          });
+        }, 8000); // changes status every 8 seconds
+
+        return () => clearInterval(timer);
+      }, [activeOrder]);
+
+      const categories = ['All', 'Burgers', 'Pizzas', 'Asian', 'Desserts', 'Drinks'];
+
+      return (
+        <div>
+          {/* Header */}
+          <header>
+            <a href="#" className="logo">
+              <span>Gourmet</span>Express 🍕
+            </a>
+            <button className="cart-icon-btn" onClick={() => setIsCartOpen(true)}>
+              🛒 Cart
+              {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+            </button>
+          </header>
+
+          {/* Main Grid */}
+          <main className="container">
+            {/* Banner Info */}
+            <div style={{ marginBottom: '2rem' }}>
+              <h1 style={{ fontSize: '2.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>Indulge in Premium Flavors</h1>
+              <p style={{ color: 'var(--text-muted)' }}>Fresh ingredients, curated master recipes, and hyper-fast contactless delivery.</p>
+            </div>
+
+            {/* Active Order Tracker */}
+            {activeOrder && (
+              <div className="order-tracking-card">
+                <div className="order-tracking-header">
+                  <div>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Active Order Status</h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      Delivering to: <span style={{ color: 'var(--text-main)' }}>{activeOrder.address}</span>
+                    </p>
+                  </div>
+                  <div className="order-tracking-status">
+                    <span>
+                      {activeOrder.step === 0 && '🔘 Order Placed'}
+                      {activeOrder.step === 1 && '🍳 Kitchen Preparing'}
+                      {activeOrder.step === 2 && '🛵 Out for Delivery'}
+                      {activeOrder.step === 3 && '✅ Delivered'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="steps-container">
+                  <div className="steps-line"></div>
+                  <div 
+                    className="steps-line-progress" 
+                    style={{ width: `${(activeOrder.step / 3) * 90}%` }}
+                  ></div>
+
+                  <div className={`step-node ${activeOrder.step >= 0 ? 'active' : ''} ${activeOrder.step > 0 ? 'completed' : ''}`}>
+                    <div className="step-circle">1</div>
+                    <div className="step-label">Placed</div>
+                  </div>
+                  <div className={`step-node ${activeOrder.step >= 1 ? 'active' : ''} ${activeOrder.step > 1 ? 'completed' : ''}`}>
+                    <div className="step-circle">2</div>
+                    <div className="step-label">Preparing</div>
+                  </div>
+                  <div className={`step-node ${activeOrder.step >= 2 ? 'active' : ''} ${activeOrder.step > 2 ? 'completed' : ''}`}>
+                    <div className="step-circle">3</div>
+                    <div className="step-label">On the way</div>
+                  </div>
+                  <div className={`step-node ${activeOrder.step >= 3 ? 'active' : ''}`}>
+                    <div className="step-circle">4</div>
+                    <div className="step-label">Delivered</div>
+                  </div>
+                </div>
+
+                {activeOrder.step === 3 && (
+                  <button 
+                    onClick={() => setActiveOrder(null)}
+                    style={{
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-main)',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      marginTop: '0.5rem'
+                    }}
+                  >
+                    Clear Tracker
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Categories */}
+            <div className="categories-container">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  className={`category-btn ${selectedCategory === cat ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Menu Cards */}
+            <div className="menu-grid">
+              {filteredMenu.map(item => (
+                <div className="menu-card" key={item.id}>
+                  <div className="food-image-container">
+                    <span>{item.icon}</span>
+                    <span className="food-tag">{item.tag}</span>
+                  </div>
+                  <div className="menu-card-body">
+                    <div>
+                      <h3 className="food-title">{item.name}</h3>
+                      <p className="food-desc">{item.desc}</p>
+                    </div>
+                    <div className="food-footer">
+                      <span className="food-price">${item.price.toFixed(2)}</span>
+                      <button className="add-btn" onClick={() => addToCart(item)}>+</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </main>
+
+          {/* Cart Sidebar */}
+          <div className={`cart-sidebar ${isCartOpen ? 'open' : ''}`}>
+            <div className="cart-header">
+              <h2 style={{ fontWeight: 700 }}>Your Order</h2>
+              <button className="close-cart-btn" onClick={() => setIsCartOpen(false)}>✕</button>
+            </div>
+
+            <div className="cart-items-list">
+              {cart.length === 0 ? (
+                <div className="empty-cart-message">
+                  <div className="empty-cart-icon">🛒</div>
+                  <p>Your cart is looking empty. Add items from the menu to start!</p>
+                </div>
+              ) : (
+                cart.map(item => (
+                  <div className="cart-item" key={item.id}>
+                    <div className="cart-item-details">
+                      <h4>{item.name}</h4>
+                      <p>${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                    <div className="cart-quantity-controls">
+                      <button className="qty-btn" onClick={() => updateQty(item.id, -1)}>-</button>
+                      <span>{item.quantity}</span>
+                      <button className="qty-btn" onClick={() => updateQty(item.id, 1)}>+</button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <div>
+                <div className="cart-summary">
+                  <div className="summary-row">
+                    <span>Subtotal</span>
+                    <span>${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="summary-row">
+                    <span>Delivery Fee</span>
+                    <span>{deliveryFee === 0 ? 'FREE' : `$${deliveryFee.toFixed(2)}`}</span>
+                  </div>
+                  <div className="summary-row">
+                    <span>Tax (8%)</span>
+                    <span>${tax.toFixed(2)}</span>
+                  </div>
+                  <div className="summary-row total">
+                    <span>Total</span>
+                    <span>${total.toFixed(2)}</span>
+                  </div>
+                </div>
+                <button className="checkout-btn" onClick={() => setShowCheckoutModal(true)}>
+                  Proceed to Checkout
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Checkout Modal */}
+          {showCheckoutModal && (
+            <div className="modal-overlay">
+              <div className="checkout-modal">
+                <div className="modal-title">
+                  <span>Delivery Details</span>
+                  <button 
+                    style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2rem' }}
+                    onClick={() => setShowCheckoutModal(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={submitOrder}>
+                  <div className="form-group">
+                    <label>Full Name</label>
+                    <input 
+                      type="text" 
+                      name="name"
+                      className="form-control" 
+                      placeholder="e.g., John Doe"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                    />
+                    {formErrors.name && <div className="error-text">{formErrors.name}</div>}
+                  </div>
+
+                  <div className="form-group">
+                    <label>10-Digit Mobile Number</label>
+                    <input 
+                      type="tel" 
+                      name="phone"
+                      className="form-control" 
+                      placeholder="e.g., 9876543210"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                    />
+                    {formErrors.phone && <div className="error-text">{formErrors.phone}</div>}
+                  </div>
+
+                  <div className="form-group">
+                    <label>Delivery Address</label>
+                    <textarea 
+                      name="address"
+                      className="form-control" 
+                      rows="3" 
+                      placeholder="Enter street, apartment number, and pincode"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                    ></textarea>
+                    {formErrors.address && <div className="error-text">{formErrors.address}</div>}
+                  </div>
+
+                  <div className="form-group">
+                    <label>Add Delivery Notes (Optional)</label>
+                    <input 
+                      type="text" 
+                      name="note"
+                      className="form-control" 
+                      placeholder="e.g. Ring bell, leave at the door"
+                      value={formData.note}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+
+                  <button type="submit" className="submit-order-btn">
+                    Place Order (${total.toFixed(2)})
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Toast Msg */}
+          {toastMsg && <div className="toast-msg">{toastMsg}</div>}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "fsd-practice-problems",
+  "version": "1.0.0",
+  "description": "Full-stack Node.js Express servers for 10 practice problems",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EduTrack - Student Performance Monitoring System Dashboard">
+  <title>EduTrack - Student Performance Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo">
+      <span>Edu</span>Track 📈
+    </a>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+      <span id="teacher-name-display" style="display: none; color: #818cf8; font-weight: 500;"></span>
+      <button class="btn btn-danger" id="logout-btn" style="display: none; padding: 0.4rem 1rem; font-size: 0.85rem;">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- 1. Authentication Lock Screen -->
+    <section id="auth-section">
+      <div class="auth-box">
+        <h2>Teacher Portal</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Log in to access and edit student grades</p>
+        
+        <form id="login-form">
+          <div class="form-group" style="text-align: left;">
+            <label for="login-email">Teacher Email</label>
+            <input type="email" id="login-email" class="form-control" placeholder="teacher@school.com" value="teacher@school.com" required>
+          </div>
+          
+          <div class="form-group" style="text-align: left;">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" value="password123" required>
+          </div>
+          
+          <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Access Dashboard</button>
+        </form>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 1rem;">Demo credentials pre-filled.</p>
+      </div>
+    </section>
+
+    <!-- 2. Main Performance Dashboard (Hidden on load) -->
+    <section id="dashboard-section" style="display: none;">
+      <!-- KPI stats grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span style="font-size: 0.9rem; color: var(--text-muted);">Class Average Score</span>
+          <span class="kpi-val" id="kpi-average">0%</span>
+        </div>
+        <div class="kpi-card">
+          <span style="font-size: 0.9rem; color: var(--text-muted);">Total Active Students</span>
+          <span class="kpi-val" id="kpi-students">0</span>
+        </div>
+        <div class="kpi-card">
+          <span style="font-size: 0.9rem; color: var(--text-muted);">Assignment Completion Rate</span>
+          <span class="kpi-val" id="kpi-assignments">0%</span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-bar">
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="search-bar" class="search-input" placeholder="Search student by name or roll no...">
+          <select id="subject-filter" class="form-control" style="width: 180px; background: var(--bg-card); border-color: var(--border); color: white;">
+            <option value="All">All Subjects</option>
+            <option value="Math">Mathematics</option>
+            <option value="Science">Science</option>
+          </select>
+        </div>
+        <button class="btn" id="add-student-btn">+ Add New Student</button>
+      </div>
+
+      <!-- Student Records Grid -->
+      <div class="students-grid" id="students-container">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal: Add Student -->
+  <div class="modal-overlay" id="add-student-modal" style="display: none;">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('add-student-modal')">✕</button>
+      <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem;">Add New Student</h3>
+      
+      <form id="add-student-form">
+        <div class="form-group">
+          <label for="student-name">Student Full Name</label>
+          <input type="text" id="student-name" class="form-control" placeholder="e.g. Peter Parker" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="student-roll">Roll Number (Unique ID)</label>
+          <input type="text" id="student-roll" class="form-control" placeholder="e.g. CS-204" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="student-class">Class / Grade Section</label>
+          <input type="text" id="student-class" class="form-control" placeholder="e.g. Sophomore A" required>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Save Record</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Marks/Records -->
+  <div class="modal-overlay" id="log-record-modal" style="display: none;">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('log-record-modal')">✕</button>
+      <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem;" id="record-modal-title">Log Student Record</h3>
+      
+      <form id="log-record-form">
+        <input type="hidden" id="record-student-id">
+        
+        <div class="form-group">
+          <label for="record-type">Record Category</label>
+          <select id="record-type" class="form-control" onchange="toggleRecordFields()">
+            <option value="mark">Test Mark / Grade</option>
+            <option value="assignment">Assignment Status</option>
+            <option value="feedback">Teacher Remarks / Feedback</option>
+          </select>
+        </div>
+
+        <!-- Fields for Marks -->
+        <div id="fields-mark">
+          <div class="form-group">
+            <label for="mark-subject">Subject</label>
+            <select id="mark-subject" class="form-control">
+              <option value="Math">Mathematics</option>
+              <option value="Science">Science</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label for="mark-score">Marks Obtained</label>
+              <input type="number" id="mark-score" class="form-control" min="0" max="100" placeholder="e.g. 85">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label for="mark-max">Maximum Marks</label>
+              <input type="number" id="mark-max" class="form-control" value="100" placeholder="e.g. 100">
+            </div>
+          </div>
+        </div>
+
+        <!-- Fields for Assignments -->
+        <div id="fields-assignment" style="display: none;">
+          <div class="form-group">
+            <label for="assignment-title">Assignment Title</label>
+            <input type="text" id="assignment-title" class="form-control" placeholder="e.g. Algebra Quiz 3">
+          </div>
+          <div class="form-group">
+            <label for="assignment-subject">Subject</label>
+            <select id="assignment-subject" class="form-control">
+              <option value="Math">Mathematics</option>
+              <option value="Science">Science</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="assignment-status">Submission Status</label>
+            <select id="assignment-status" class="form-control">
+              <option value="Submitted">Submitted / Completed</option>
+              <option value="Pending">Pending / Incomplete</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Fields for Feedback -->
+        <div id="fields-feedback" style="display: none;">
+          <div class="form-group">
+            <label for="feedback-text">Feedback Comments</label>
+            <textarea id="feedback-text" class="form-control" rows="3" placeholder="Provide notes on student performance, attentiveness..."></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Log Record</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast alert -->
+  <div class="toast" id="toast">Feedback message</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

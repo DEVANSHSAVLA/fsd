@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Movable Box Animation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <section>
+      <h2>CSS Box Runway Animation</h2>
+      <p>Animate a box to slide from left to right across the screen with play states and speed controllers.</p>
+
+      <!-- Track Runway -->
+      <div class="animation-track">
+        <div class="animated-box" id="runway-box"></div>
+      </div>
+
+      <!-- Play Deck -->
+      <div class="controls-group">
+        <button class="btn" id="toggle-state-btn">Pause Animation</button>
+        <button class="btn btn-secondary" onclick="setSpeed('2s', 'Fast')">Fast (2s)</button>
+        <button class="btn btn-secondary" onclick="setSpeed('4s', 'Medium')">Medium (4s)</button>
+        <button class="btn btn-secondary" onclick="setSpeed('8s', 'Slow')">Slow (8s)</button>
+        
+        <span id="speed-indicator" style="align-self: center; font-size: 0.9rem; color: var(--text-muted); margin-left: 1rem;">
+          Speed: Medium
+        </span>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const runwayBox = document.getElementById('runway-box');
+    const toggleStateBtn = document.getElementById('toggle-state-btn');
+    const speedIndicator = document.getElementById('speed-indicator');
+
+    toggleStateBtn.addEventListener('click', () => {
+      const state = window.getComputedStyle(runwayBox).animationPlayState;
+
+      if (state === 'running') {
+        runwayBox.style.animationPlayState = 'paused';
+        toggleStateBtn.innerText = 'Resume Animation';
+        toggleStateBtn.style.background = '#8b5cf6';
+      } else {
+        runwayBox.style.animationPlayState = 'running';
+        toggleStateBtn.innerText = 'Pause Animation';
+        toggleStateBtn.style.background = 'var(--primary)';
+      }
+    });
+
+    window.setSpeed = function(duration, speedName) {
+      runwayBox.style.animationDuration = duration;
+      speedIndicator.innerText = `Speed: ${speedName}`;
+    };
+  </script>
+</body>
+</html>

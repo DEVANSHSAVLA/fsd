@@ -1,0 +1,1 @@
+{"name": "7b-flexbox-card", "version": "1.0.0", "description": "Server for 7b-flexbox-card", "main": "server.js", "scripts": {"start": "node server.js"}, "dependencies": {"express": "^4.19.2"}}

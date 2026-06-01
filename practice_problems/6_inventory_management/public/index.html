@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockWise - Inventory & Sales Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>Stock</span>Wise 📦
+    </div>
+    <span class="header-tagline">Real-time Stock Control Terminal</span>
+  </header>
+
+  <div class="container">
+    
+    <!-- 1. Stats Dashboard -->
+    <section class="stats-row">
+      <div class="stat-card">
+        <h3>Total Products</h3>
+        <p class="stat-value" id="stats-total-products">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Stock Count</h3>
+        <p class="stat-value" id="stats-total-stock">0</p>
+      </div>
+      <div class="stat-card" id="low-stock-card">
+        <h3>Low Stock Alerts</h3>
+        <p class="stat-value text-red" id="stats-low-stock">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Revenue</h3>
+        <p class="stat-value text-green" id="stats-revenue">$0.00</p>
+      </div>
+    </section>
+
+    <div class="layout-grid">
+      
+      <!-- Left: Products List & Supplier Directory -->
+      <div class="left-col">
+        <!-- Products Grid Panel -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Product Catalog & Stock</h2>
+            <button class="btn btn-sm" onclick="showProductModal()">+ New Product</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Supplier</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="product-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Suppliers panel -->
+        <section class="panel" style="margin-top: 1.5rem;">
+          <div class="panel-header">
+            <h2>Supplier Directory</h2>
+            <button class="btn btn-sm btn-outline" onclick="showSupplierModal()">+ Add Supplier</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Supplier Name</th>
+                  <th>Contact Person</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody id="supplier-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right: Register terminal & recent transactions -->
+      <div class="right-col">
+        <!-- Sales terminal -->
+        <section class="panel">
+          <h2>Sales & Billing Cashier</h2>
+          <form id="sales-form">
+            <div class="form-group">
+              <label for="sale-product">Select Product</label>
+              <select id="sale-product" class="form-control" onchange="updateSalePrice()" required>
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group" style="flex:1;">
+                <label for="sale-qty">Quantity</label>
+                <input type="number" id="sale-qty" class="form-control" min="1" value="1" oninput="calculateTotal()" required>
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label for="sale-price">Unit Price ($)</label>
+                <input type="text" id="sale-price" class="form-control" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="sale-customer">Customer Name</label>
+              <input type="text" id="sale-customer" class="form-control" placeholder="e.g. Wayne Enterprises" required>
+            </div>
+
+            <div class="invoice-summary">
+              <div class="invoice-row">
+                <span>Subtotal:</span>
+                <span id="invoice-subtotal">$0.00</span>
+              </div>
+              <div class="invoice-row highlight">
+                <span>Total Due:</span>
+                <span id="invoice-total">$0.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success" style="margin-top: 1rem;">Process Sale & Print Receipt</button>
+          </form>
+        </section>
+
+        <!-- Printable Invoice Slip Card -->
+        <section id="invoice-panel" class="panel invoice-slip" style="display: none; margin-top: 1.5rem;">
+          <div class="invoice-header">
+            <h3>STOCKWISE RECEIPT</h3>
+            <p>Official Transaction Invoice</p>
+          </div>
+          <div class="invoice-details">
+            <p><strong>Invoice ID:</strong> <span id="inv-id">#1029</span></p>
+            <p><strong>Customer:</strong> <span id="inv-cust">Wayne</span></p>
+            <p><strong>Date:</strong> <span id="inv-date">2026-06-02</span></p>
+            <hr style="border: none; border-top: 1px dashed var(--border); margin: 0.5rem 0;">
+            <p style="display:flex; justify-content:space-between;">
+              <span id="inv-item">Product x Qty</span>
+              <strong id="inv-total">$0.00</strong>
+            </p>
+          </div>
+          <div class="invoice-barcode">|||| ||| ||| |||</div>
+          <button class="btn btn-sm" style="width:100%; margin-top:1rem;" onclick="dismissInvoice()">Close Receipt</button>
+        </section>
+
+        <!-- Recent Sales logs -->
+        <section class="panel" style="margin-top: 1.5rem;">
+          <h2>Recent Sales Logs</h2>
+          <div id="sales-log-container" class="log-container">
+            <!-- Dynamic sales logs -->
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Product Modal -->
+  <div id="product-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="product-modal-title">Add New Product</h3>
+        <button onclick="closeProductModal()" class="close-btn">&times;</button>
+      </div>
+      <form id="product-form">
+        <input type="hidden" id="prod-id">
+        <div class="form-group">
+          <label for="prod-name">Product Name</label>
+          <input type="text" id="prod-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="prod-supplier">Supplier</label>
+          <select id="prod-supplier" class="form-control" required>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex:1;">
+            <label for="prod-qty">Current Stock</label>
+            <input type="number" id="prod-qty" class="form-control" min="0" required>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label for="prod-min">Min Stock Alert Threshold</label>
+            <input type="number" id="prod-min" class="form-control" min="0" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="prod-price">Selling Price ($)</label>
+          <input type="number" id="prod-price" class="form-control" min="0.01" step="0.01" required>
+        </div>
+        <button type="submit" class="btn">Save Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Supplier Modal -->
+  <div id="supplier-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add Supplier</h3>
+        <button onclick="closeSupplierModal()" class="close-btn">&times;</button>
+      </div>
+      <form id="supplier-form">
+        <div class="form-group">
+          <label for="sup-name">Supplier / Company Name</label>
+          <input type="text" id="sup-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="sup-contact">Contact Person</label>
+          <input type="text" id="sup-contact" class="form-control" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex:1;">
+            <label for="sup-phone">Phone Number</label>
+            <input type="tel" id="sup-phone" class="form-control" required>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label for="sup-email">Email Address</label>
+            <input type="email" id="sup-email" class="form-control" required>
+          </div>
+        </div>
+        <button type="submit" class="btn">Add Supplier</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

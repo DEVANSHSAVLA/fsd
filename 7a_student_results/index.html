@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Student Result Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Load React, ReactDOM, and Babel from CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    const SEED_DATA = [
+      { id: 1, name: "Diana Prince", rollNo: "RES-901", math: 92, physics: 88 },
+      { id: 2, name: "Arthur Curry", rollNo: "RES-902", math: 42, physics: 55 },
+      { id: 3, name: "Barry Allen", rollNo: "RES-903", math: 99, physics: 95 }
+    ];
+
+    function App() {
+      const [students, setStudents] = useState(SEED_DATA);
+      const [filter, setFilter] = useState('All');
+      
+      // Form States
+      const [name, setName] = useState('');
+      const [roll, setRoll] = useState('');
+      const [mathScore, setMathScore] = useState('');
+      const [physScore, setPhysScore] = useState('');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!name || !roll || mathScore === '' || physScore === '') return;
+
+        const newStudent = {
+          id: Date.now(),
+          name,
+          rollNo: roll,
+          math: Number(mathScore),
+          physics: Number(physScore)
+        };
+
+        setStudents([...students, newStudent]);
+        setName('');
+        setRoll('');
+        setMathScore('');
+        setPhysScore('');
+      };
+
+      const filteredList = useMemo(() => {
+        return students.filter(s => {
+          const avg = (s.math + s.physics) / 2;
+          const passed = avg >= 50;
+          if (filter === 'Pass') return passed;
+          if (filter === 'Fail') return !passed;
+          return true;
+        });
+      }, [students, filter]);
+
+      return (
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <h1 style={{ fontSize: '2.2rem', fontWeight: 700 }}>Student Result Dashboard</h1>
+            <p style={{ color: 'var(--text-muted)' }}>Manage student course grades, compute GPA, and monitor pass rates in real-time.</p>
+          </div>
+
+          <!-- Add Grade Form Panel -->
+          <div className="panel">
+            <h2>Add Grade Record</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Full Name</label>
+                  <input type="text" className="form-control" value={name} onChange={e=>setName(e.target.value)} placeholder="Clark Kent" required />
+                </div>
+                <div className="form-group">
+                  <label>Roll Number</label>
+                  <input type="text" className="form-control" value={roll} onChange={e=>setRoll(e.target.value)} placeholder="RES-904" required />
+                </div>
+                <div className="form-group" style={{ flex: '0 0 120px' }}>
+                  <label>Mathematics</label>
+                  <input type="number" className="form-control" value={mathScore} onChange={e=>setMathScore(e.target.value)} min="0" max="100" placeholder="0-100" required />
+                </div>
+                <div className="form-group" style={{ flex: '0 0 120px' }}>
+                  <label>Physics</label>
+                  <input type="number" className="form-control" value={physScore} onChange={e=>setPhysScore(e.target.value)} min="0" max="100" placeholder="0-100" required />
+                </div>
+              </div>
+              <button type="submit" className="btn">Add Record</button>
+            </form>
+          </div>
+
+          <!-- Filter section -->
+          <div className="filter-bar">
+            <button className={`filter-btn ${filter === 'All' ? 'active' : ''}`} onClick={() => setFilter('All')}>Show All</button>
+            <button className={`filter-btn ${filter === 'Pass' ? 'active' : ''}`} onClick={() => setFilter('Pass')}>Passed</button>
+            <button className={`filter-btn ${filter === 'Fail' ? 'active' : ''}`} onClick={() => setFilter('Fail')}>Failed</button>
+          </div>
+
+          <!-- Results Grid Table -->
+          <div className="panel" style={{ padding: '1.5rem' }}>
+            <h2>Academic Results</h2>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Mathematics</th>
+                    <th>Physics</th>
+                    <th>Average</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredList.map(s => {
+                    const avg = (s.math + s.physics) / 2;
+                    const passed = avg >= 50;
+                    return (
+                      <tr key={s.id}>
+                        <td><strong>{s.rollNo}</strong></td>
+                        <td>{s.name}</td>
+                        <td>{s.math}</td>
+                        <td>{s.physics}</td>
+                        <td>{avg.toFixed(1)}%</td>
+                        <td>
+                          <span className={`badge ${passed ? 'badge-pass' : 'badge-fail'}`}>
+                            {passed ? 'Passed' : 'Failed'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

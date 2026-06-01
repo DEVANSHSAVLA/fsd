@@ -1,0 +1,92 @@
+/* c:\Users\Deepak Chheda\Downloads\DEVANSH SUBMISSION\fsd\7b_flexbox_card\style.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+:root {
+  --primary: #ec4899;
+  --bg-dark: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flexbox container */
+.cards-flexbox-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 1000px;
+}
+
+/* Part B: Flexbox Card layout with a border, shadow, padding, and centered text */
+.profile-card {
+  width: 260px;
+  background: var(--bg-card);
+  border: 1px solid var(--border); /* Border */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35); /* Shadow */
+  padding: 2.5rem 1.5rem; /* Padding */
+  border-radius: 20px;
+  text-align: center; /* Centered Text */
+  
+  /* Flexbox vertical child centering alignment */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+  box-shadow: 0 15px 30px rgba(236, 72, 153, 0.15);
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.role {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.bio {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin-bottom: 0;
+}

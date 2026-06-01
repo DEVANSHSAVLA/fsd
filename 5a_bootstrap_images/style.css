@@ -1,0 +1,55 @@
+/* c:\Users\Deepak Chheda\Downloads\DEVANSH SUBMISSION\fsd\5a_bootstrap_images\style.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.gallery-section {
+  max-width: 1100px;
+  margin: 5rem auto;
+  padding: 0 1.5rem;
+}
+
+.img-wrapper {
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.img-card {
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.4s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.img-wrapper:hover .img-card {
+  transform: scale(1.1);
+}
+
+.overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+  width: 100%;
+  padding: 1.5rem 1rem;
+  color: white;
+  text-align: center;
+}
+
+.overlay h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.overlay p {
+  font-size: 0.85rem;
+  margin-bottom: 0;
+  opacity: 0.8;
+}

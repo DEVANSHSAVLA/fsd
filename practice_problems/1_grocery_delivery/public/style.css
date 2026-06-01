@@ -1,0 +1,280 @@
+/* c:\Users\Deepak Chheda\Downloads\DEVANSH SUBMISSION\fsd\practice_problems\1_grocery_delivery\public\style.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #10b981; /* Emerald-500 */
+  --primary-hover: #059669;
+  --bg-dark: #070a13;
+  --bg-card: rgba(17, 24, 39, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+header {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.logo span {
+  color: var(--primary);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Category pills */
+.categories {
+  display: flex;
+  gap: 0.8rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  margin-bottom: 2rem;
+}
+
+.category-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.category-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Catalog Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.product-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-img {
+  height: 140px;
+  background: linear-gradient(135deg, #1e293b, #111827);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+}
+
+.product-info {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+}
+
+.product-qty {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.product-price {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.btn-add {
+  background: var(--primary);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sidebar Cart styling */
+.cart-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100vh;
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid var(--border);
+  z-index: 110;
+  padding: 2rem;
+  box-sizing: border-box;
+  transform: translateX(100%);
+  transition: transform 0.4s ease;
+}
+
+.cart-sidebar.open {
+  transform: translateX(0);
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Tracker Step nodes */
+.tracker-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #1f2937;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.step-node.active .step-circle {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.step-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #111827;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 450px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.form-control {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  color: white;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.7rem;
+  width: 100%;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}

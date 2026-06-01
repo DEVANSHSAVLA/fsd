@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ShopSphere - Premium Online Shopping Portal">
+  <title>ShopSphere - Modern E-Commerce System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo" id="logo-btn">
+      <span>Shop</span>Sphere 🛍️
+    </a>
+    
+    <nav class="nav-links">
+      <span class="nav-link active" id="nav-products">Products</span>
+      <span class="nav-link" id="nav-cart">Cart (<span id="cart-count">0</span>)</span>
+      <span class="nav-link" id="nav-orders" style="display: none;">My Orders</span>
+      <span class="nav-link" id="user-display" style="display: none; color: #818cf8;"></span>
+      <button class="auth-btn" id="auth-action-btn">Login</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- 1. Authentication View (Hidden by default) -->
+    <section id="auth-view" style="display: none;">
+      <div class="auth-container">
+        <div class="auth-header">
+          <h2 id="auth-title">Welcome Back</h2>
+          <p id="auth-subtitle" style="color: var(--text-muted); font-size: 0.9rem;">Sign in to access your cart and orders</p>
+        </div>
+        
+        <form id="auth-form">
+          <!-- Register fields (Hidden on login view) -->
+          <div class="form-group" id="reg-name-group" style="display: none;">
+            <label for="auth-name">Full Name</label>
+            <input type="text" id="auth-name" class="form-control" placeholder="John Doe">
+            <div class="error-msg" id="err-name"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="auth-email">Email Address</label>
+            <input type="email" id="auth-email" class="form-control" placeholder="you@example.com">
+            <div class="error-msg" id="err-email"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" class="form-control" placeholder="••••••••">
+            <div class="error-msg" id="err-password"></div>
+          </div>
+
+          <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;" id="auth-submit-btn">Login</button>
+        </form>
+
+        <div class="auth-toggle">
+          <p id="auth-toggle-text">Don't have an account? <span id="auth-toggle-link">Register</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Product Listing View -->
+    <section id="products-view">
+      <div class="search-filter-section">
+        <div class="search-wrapper">
+          <input type="text" id="search-input" class="search-input" placeholder="Search premium items...">
+        </div>
+        <div class="filter-group">
+          <button class="filter-btn active" data-category="All">All</button>
+          <button class="filter-btn" data-category="Electronics">Electronics</button>
+          <button class="filter-btn" data-category="Accessories">Accessories</button>
+          <button class="filter-btn" data-category="Fitness">Fitness</button>
+        </div>
+      </div>
+
+      <div class="products-grid" id="products-container">
+        <!-- JS mounts cards here -->
+      </div>
+    </section>
+
+    <!-- 3. Cart View -->
+    <section id="cart-view" style="display: none;">
+      <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Your Shopping Cart</h2>
+      
+      <div class="cart-layout" id="cart-layout-container">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- 4. Orders View -->
+    <section id="orders-view" style="display: none;">
+      <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem;">Your Order History</h2>
+      <div id="orders-container">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+  </div>
+
+  <!-- Product Details Modal -->
+  <div class="modal-overlay" id="product-detail-modal" style="display: none;">
+    <div class="modal-content" id="modal-container">
+      <!-- Mounted dynamically -->
+    </div>
+  </div>
+
+  <!-- Toast Alert -->
+  <div class="toast" id="toast-notification">Notification text</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

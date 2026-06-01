@@ -1,0 +1,22 @@
+# Ignore node_modules
+node_modules/
+**/node_modules/
+
+# Ignore log files
+*.log
+**/*.log
+
+# Ignore local environment files
+.env
+.env.local
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Documents and batch files
+*.bat
+*.pdf
+*.docx
+**/run_all_servers.bat
+**/run_practice_servers.bat

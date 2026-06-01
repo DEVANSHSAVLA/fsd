@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LancerGrid - Freelance Marketplace</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>Lancer</span>Grid 💼
+    </div>
+    <div class="role-selector">
+      <span style="font-size: 0.85rem; color: var(--text-muted);">Browsing Mode:</span>
+      <button id="mode-freelancer" class="mode-btn active" onclick="switchRole('freelancer')">Freelancer</button>
+      <button id="mode-client" class="mode-btn" onclick="switchRole('client')">Client Portal</button>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- 1. Stats Row -->
+    <section class="stats-row">
+      <div class="stat-card">
+        <h3>Total Open Jobs</h3>
+        <p class="stat-value" id="stats-open-jobs">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Bids Placed</h3>
+        <p class="stat-value" id="stats-total-bids">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Active Contracts</h3>
+        <p class="stat-value text-blue" id="stats-active-contracts">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Funds Committed</h3>
+        <p class="stat-value text-green" id="stats-funds">$0</p>
+      </div>
+    </section>
+
+    <!-- 2. Dual Panels -->
+    <div class="main-layout">
+      
+      <!-- FREELANCER VIEW (Browse jobs, Bid form, Active contracts) -->
+      <div id="freelancer-view" class="view-panel">
+        <div class="dual-columns">
+          
+          <!-- Browse Jobs column -->
+          <div class="col-8">
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Browse Available Gigs</h2>
+                <div class="filter-group">
+                  <select id="filter-category" onchange="loadJobs()" class="form-control form-control-sm">
+                    <option value="">All Categories</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Design">UI/UX & Design</option>
+                    <option value="Content Writing">Content Writing</option>
+                    <option value="Marketing">Marketing & SEO</option>
+                  </select>
+                </div>
+              </div>
+              <div id="job-feed-container" class="feed-container">
+                <!-- Dynamically populated open job cards -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Contracts column -->
+          <div class="col-4">
+            <div class="panel">
+              <h2>My Work Pipeline</h2>
+              <div id="freelancer-pipeline" class="pipeline-container">
+                <!-- List of contracts in progress -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CLIENT VIEW (Post job, view proposals, award) -->
+      <div id="client-view" class="view-panel" style="display: none;">
+        <div class="dual-columns">
+          
+          <!-- Post job column -->
+          <div class="col-4">
+            <div class="panel">
+              <h2>Post a New Gig</h2>
+              <form id="post-job-form">
+                <div class="form-group">
+                  <label for="job-title">Project Title</label>
+                  <input type="text" id="job-title" class="form-control" placeholder="e.g. Build React Dashboard" required>
+                </div>
+                <div class="form-group">
+                  <label for="job-category">Category</label>
+                  <select id="job-category" class="form-control" required>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Design">UI/UX & Design</option>
+                    <option value="Content Writing">Content Writing</option>
+                    <option value="Marketing">Marketing & SEO</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="job-budget">Est. Budget ($)</label>
+                  <input type="number" id="job-budget" class="form-control" min="5" placeholder="e.g. 500" required>
+                </div>
+                <div class="form-group">
+                  <label for="job-desc">Job Description</label>
+                  <textarea id="job-desc" class="form-control" rows="5" placeholder="Provide detailed project scope..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post Project</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Manage job proposals column -->
+          <div class="col-8">
+            <div class="panel">
+              <h2>Review Proposals & Award Contracts</h2>
+              <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Select your posted jobs to inspect freelancer bids and lock in contracts.</p>
+              <div id="client-jobs-container" class="feed-container">
+                <!-- Client's own job posts with bid list inside -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bid Submission Modal Overlay -->
+  <div id="bid-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Place Your Proposal</h3>
+        <button onclick="closeBidModal()" class="close-btn">&times;</button>
+      </div>
+      <form id="bid-form">
+        <input type="hidden" id="bid-job-id">
+        <div class="form-group">
+          <label for="bid-freelancer">Your Name</label>
+          <input type="text" id="bid-freelancer" class="form-control" placeholder="e.g. Alex Mercer" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label for="bid-amount">Bid Amount ($)</label>
+            <input type="number" id="bid-amount" class="form-control" min="1" placeholder="e.g. 450" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="bid-days">Delivery Days</label>
+            <input type="number" id="bid-days" class="form-control" min="1" placeholder="e.g. 7" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="bid-proposal">Cover Letter / Proposal</label>
+          <textarea id="bid-proposal" class="form-control" rows="4" placeholder="Why are you a good fit for this project?" required></textarea>
+        </div>
+        <button type="submit" class="btn">Submit Bid</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

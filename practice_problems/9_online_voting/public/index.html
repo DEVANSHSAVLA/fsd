@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eVote - Secure Online Voting System</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Authentication Container -->
+  <div id="auth-container" class="auth-card">
+    <div class="logo" style="text-align: center; font-size: 2.2rem; margin-bottom: 0.5rem;">
+      <span>e</span>Vote 🗳️
+    </div>
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Official Secure Digital Ballot Terminal</p>
+    
+    <div class="tabs">
+      <button id="tab-login" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+      <button id="tab-register" class="tab-btn" onclick="switchAuthTab('register')">Register to Vote</button>
+    </div>
+
+    <!-- Login -->
+    <form id="login-form">
+      <div class="form-group">
+        <label for="login-username">Voter ID / Username</label>
+        <input type="text" id="login-username" class="form-control" placeholder="Enter username" required>
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" class="form-control" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="btn">Authenticate Identity</button>
+    </form>
+
+    <!-- Register (Eligibility age validation >= 18) -->
+    <form id="register-form" style="display: none;">
+      <div class="form-group">
+        <label for="reg-username">Choose Voter ID / Username</label>
+        <input type="text" id="reg-username" class="form-control" placeholder="Letters & numbers only" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label for="reg-age">Age (Must be &ge; 18)</label>
+          <input type="number" id="reg-age" class="form-control" placeholder="Years" min="1" required>
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label for="reg-ssn">SSN / National ID</label>
+          <input type="text" id="reg-ssn" class="form-control" placeholder="e.g. 123-456" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="reg-password">Passphrase / Password</label>
+        <input type="password" id="reg-password" class="form-control" placeholder="Enter secure password" required>
+      </div>
+      <button type="submit" class="btn btn-warning">Submit Verification & Register</button>
+    </form>
+  </div>
+
+  <!-- Main Voting App Container (Hidden on load) -->
+  <div id="app-container" style="display: none;">
+    <header>
+      <div class="logo"><span>e</span>Vote 🗳️</div>
+      <div class="user-profile">
+        <span id="user-display">Voter ID: Anonymous</span>
+        <span id="voter-badge" class="badge">Eligible</span>
+        <button onclick="logout()" class="btn-logout">Exit Terminal</button>
+      </div>
+    </header>
+
+    <div class="container">
+      
+      <!-- Live Results Bar Center -->
+      <section class="card results-card" style="margin-bottom: 2rem;">
+        <div class="results-header">
+          <h2>Live Poll Election Results</h2>
+          <div>Total Ballots Cast: <strong id="total-ballots" style="color:var(--primary);">0</strong></div>
+        </div>
+        
+        <div id="results-bar-container" class="results-container">
+          <!-- Dynamic percentage bars populated here -->
+        </div>
+      </section>
+
+      <!-- Candidate Grid -->
+      <section class="card">
+        <h2>Candidates & Nominees Balloting</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">
+          Select a candidate and cast your ballot. Note: Once your ballot is cast, your choice cannot be altered.
+        </p>
+
+        <div id="candidates-grid" class="candidates-grid">
+          <!-- Dynamic cards for candidates -->
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Ballot Casting Confirmation Modal Dialog -->
+  <div id="vote-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Confirm Ballot Submission</h3>
+        <button onclick="closeVoteModal()" class="close-btn">&times;</button>
+      </div>
+      <div style="margin-bottom: 1.5rem;">
+        <p>You are about to cast your vote for:</p>
+        <div style="background-color: var(--bg-dark); padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: center; border: 1px solid var(--border);">
+          <span id="confirm-candidate-symbol" style="font-size: 2.5rem; display:block;">🦁</span>
+          <strong id="confirm-candidate-name" style="font-size:1.2rem; color:#fff;">Leo Vance</strong><br>
+          <span id="confirm-candidate-party" style="font-size:0.85rem; color:var(--text-muted);">Independent Alliance</span>
+        </div>
+        <p style="color: var(--error); font-size: 0.82rem; font-weight: 600; text-align: center;">WARNING: Double voting is prohibited. This action is irreversible.</p>
+      </div>
+      <div class="form-row">
+        <button class="btn btn-outline" onclick="closeVoteModal()" style="flex:1;">Cancel</button>
+        <button class="btn btn-warning" id="submit-ballot-btn" style="flex:1;">Cast Vote Now</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

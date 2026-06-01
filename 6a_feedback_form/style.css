@@ -1,0 +1,126 @@
+/* c:\Users\Deepak Chheda\Downloads\DEVANSH SUBMISSION\fsd\6a_feedback_form\style.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #c084fc; /* Light Purple */
+  --primary-glow: rgba(192, 132, 252, 0.4);
+  --bg-dark: #090611;
+  --bg-card: rgba(26, 18, 46, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-main: #f3e8ff;
+  --text-muted: #a78bfa;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: radial-gradient(circle at top right, rgba(167, 139, 250, 0.05), transparent 50%);
+}
+
+.form-wrapper {
+  max-width: 460px;
+  width: 100%;
+  padding: 2.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-control {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  color: white;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+.btn-submit {
+  width: 100%;
+  background: var(--primary);
+  border: none;
+  color: #090611;
+  padding: 0.9rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  background: #d8b4fe;
+  box-shadow: 0 6px 20px var(--primary-glow);
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #10b981;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  display: none;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

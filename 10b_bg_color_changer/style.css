@@ -1,0 +1,106 @@
+/* c:\Users\Deepak Chheda\Downloads\DEVANSH SUBMISSION\fsd\10b_bg_color_changer\style.css */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #6366f1;
+  --bg-slate: #0b0f19;
+  --bg-card: rgba(22, 30, 49, 0.75);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-slate);
+  color: var(--text-main);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Smooth backdrop transition */
+  transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container {
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.2rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  border-left: 4px solid var(--primary);
+  padding-left: 0.75rem;
+}
+
+p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* Color dots flex list */
+.palette-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.color-dot {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid white;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.color-dot:hover {
+  transform: scale(1.15);
+}
+
+/* Toast Message */
+.toast-msg {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  background: var(--success);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  font-weight: 600;
+  z-index: 200;
+  
+  /* Initial hidden state */
+  opacity: 0;
+  transform: translateY(30px);
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-msg.show-toast {
+  opacity: 1;
+  transform: translateY(0);
+}
